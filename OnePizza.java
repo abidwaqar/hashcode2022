@@ -1,3 +1,7 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
 /**
  * OnePizza
  * You are opening a small pizzeria. In fact, your pizzeria is so small that you
@@ -28,7 +32,30 @@
  * character is one of the lowercase letters (a-z) or a digit (0-9).
  */
 public class OnePizza {
+
+    static class LikesAndDislikes {
+        String[] likes;
+        String[] dislikes;
+    }
+
     public static void main(String[] args) {
-        System.out.println("One Pizza");
+        try {
+            File myObj = new File("inputs/a_an_example.in.txt");
+            Scanner myReader = new Scanner(myObj);
+
+            int potentialClients = Integer.parseInt(myReader.nextLine());
+            LikesAndDislikes[] clientsPreferences = new LikesAndDislikes[potentialClients];
+            for (int i = 0; i < potentialClients; ++i) {
+                LikesAndDislikes clientPreferences = new LikesAndDislikes();
+                clientPreferences.likes = myReader.nextLine().split(" ");
+                clientPreferences.dislikes = myReader.nextLine().split(" ");
+                clientsPreferences[i] = clientPreferences;
+            }
+
+            myReader.close();
+        } catch (Exception e) {
+            System.out.println("An error occurred: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 }
