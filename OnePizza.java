@@ -1,6 +1,10 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
+import java.util.Set;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.List;
 
 /**
  * OnePizza
@@ -33,9 +37,9 @@ import java.util.Scanner;
  */
 public class OnePizza {
 
-    static class LikesAndDislikes {
-        String[] likes;
-        String[] dislikes;
+    static class Client {
+        List<String> likes;
+        List<String> dislikes;
     }
 
     public static void main(String[] args) {
@@ -43,19 +47,34 @@ public class OnePizza {
             File myObj = new File("inputs/a_an_example.in.txt");
             Scanner myReader = new Scanner(myObj);
 
-            int potentialClients = Integer.parseInt(myReader.nextLine());
-            LikesAndDislikes[] clientsPreferences = new LikesAndDislikes[potentialClients];
-            for (int i = 0; i < potentialClients; ++i) {
-                LikesAndDislikes clientPreferences = new LikesAndDislikes();
-                clientPreferences.likes = myReader.nextLine().split(" ");
-                clientPreferences.dislikes = myReader.nextLine().split(" ");
-                clientsPreferences[i] = clientPreferences;
+            int numClients = Integer.parseInt(myReader.nextLine());
+            Set<String> ingredients = new LinkedHashSet<String>();   
+            Client[] clients = new Client[numClients];
+
+            for (int i = 0; i < numClients; ++i) {
+                
+                Client newClient = new Client();
+                
+                newClient.likes = Arrays.asList(myReader.nextLine().split(" "));
+                newClient.dislikes = Arrays.asList(myReader.nextLine().split(" "));
+                
+                ingredients.addAll(newClient.likes);
+                ingredients.addAll(newClient.dislikes);
+                
+                clients[i] = newClient;
             }
 
             myReader.close();
+
+            for (String ingredient : ingredients) {
+                System.out.println(ingredient);
+            }
+
         } catch (Exception e) {
             System.out.println("An error occurred: " + e.getMessage());
             e.printStackTrace();
         }
+
+        
     }
 }
