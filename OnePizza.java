@@ -1,9 +1,9 @@
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.util.Arrays;
 import java.util.Scanner;
 import java.util.Set;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -42,22 +42,31 @@ public class OnePizza {
         List<String> dislikes;
     }
 
+    public static String ingredientsToInclude(Set<String> ingredients, Client[] clients)
+    {
+
+        return "";
+    }
+
     public static void main(String[] args) {
         try {
-            File myObj = new File("inputs/a_an_example.in.txt");
-            Scanner myReader = new Scanner(myObj);
+            File inputFileObject = new File("inputs/a_an_example.in.txt");
+            Scanner myReader = new Scanner(inputFileObject);
 
             int numClients = Integer.parseInt(myReader.nextLine());
-            Set<String> ingredients = new LinkedHashSet<String>();   
+            HashSet<String> ingredients = new HashSet<>();
             Client[] clients = new Client[numClients];
 
             for (int i = 0; i < numClients; ++i) {
                 
                 Client newClient = new Client();
+
+                String[] rawLikes = myReader.nextLine().split(" ");
+                newClient.likes = Arrays.asList(Arrays.copyOfRange(rawLikes, 1, rawLikes.length));
                 
-                newClient.likes = Arrays.asList(myReader.nextLine().split(" "));
-                newClient.dislikes = Arrays.asList(myReader.nextLine().split(" "));
-                
+                String[] rawDislikes = myReader.nextLine().split(" ");
+                newClient.dislikes = Arrays.asList(Arrays.copyOfRange(rawDislikes, 1, rawDislikes.length));
+
                 ingredients.addAll(newClient.likes);
                 ingredients.addAll(newClient.dislikes);
                 
@@ -66,9 +75,16 @@ public class OnePizza {
 
             myReader.close();
 
-            for (String ingredient : ingredients) {
-                System.out.println(ingredient);
-            }
+            String result = ingredientsToInclude(ingredients, clients);
+            String ouputFileName = "result.txt";
+
+            File ouputFileObject = new File(ouputFileName);
+            ouputFileObject.createNewFile();
+
+            FileWriter myWriter = new FileWriter(ouputFileName);
+            myWriter.write(result);
+
+            myWriter.close();
 
         } catch (Exception e) {
             System.out.println("An error occurred: " + e.getMessage());
