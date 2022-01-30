@@ -1,5 +1,6 @@
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.util.Arrays;
 import java.util.Scanner;
 
 /**
@@ -40,19 +41,36 @@ public class OnePizza {
 
     public static void main(String[] args) {
         try {
-            File myObj = new File("inputs/a_an_example.in.txt");
-            Scanner myReader = new Scanner(myObj);
+            File inputFileObject = new File("inputs/a_an_example.in.txt");
+            Scanner myReader = new Scanner(inputFileObject);
 
             int potentialClients = Integer.parseInt(myReader.nextLine());
             LikesAndDislikes[] clientsPreferences = new LikesAndDislikes[potentialClients];
             for (int i = 0; i < potentialClients; ++i) {
                 LikesAndDislikes clientPreferences = new LikesAndDislikes();
-                clientPreferences.likes = myReader.nextLine().split(" ");
-                clientPreferences.dislikes = myReader.nextLine().split(" ");
+
+                String[] rawLikes = myReader.nextLine().split(" ");
+                clientPreferences.likes = Arrays.copyOfRange(rawLikes, 1, rawLikes.length);
+
+                String[] rawDislikes = myReader.nextLine().split(" ");
+                clientPreferences.dislikes = Arrays.copyOfRange(rawDislikes, 1, rawDislikes.length);
+
                 clientsPreferences[i] = clientPreferences;
             }
 
             myReader.close();
+
+            String result = "4 cheese mushrooms tomatoes peppers";
+            String ouputFileName = "result.txt";
+
+            File ouputFileObject = new File(ouputFileName);
+            ouputFileObject.createNewFile();
+
+            FileWriter myWriter = new FileWriter(ouputFileName);
+            myWriter.write(result);
+
+            myWriter.close();
+
         } catch (Exception e) {
             System.out.println("An error occurred: " + e.getMessage());
             e.printStackTrace();
