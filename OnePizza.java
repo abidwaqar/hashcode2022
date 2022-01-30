@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -42,55 +43,71 @@ public class OnePizza {
         List<String> dislikes;
     }
 
-    public static String ingredientsToInclude(Set<String> ingredients, Client[] clients)
+    static class InputParameters
     {
+        Set<String> ingredients;
+        Client[] clients;
 
+        public InputParameters(Set<String> ingredients, Client[] clients)
+        {
+            this.ingredients = ingredients;
+            this.clients = clients;
+        }
+    }
+    
+    static InputParameters getInputParameters(String pathToInputFile) throws FileNotFoundException
+    {
+        File inputFileObject = new File("inputs/a_an_example.in.txt");
+        Scanner myReader = new Scanner(inputFileObject);
+
+        int numClients = Integer.parseInt(myReader.nextLine());
+        HashSet<String> ingredients = new HashSet<>();
+        Client[] clients = new Client[numClients];
+
+        for (int i = 0; i < numClients; ++i) {
+            Client newClient = new Client();
+
+            String[] rawLikes = myReader.nextLine().split(" ");
+            clients[i].likes = Arrays.asList(Arrays.copyOfRange(rawLikes, 1, rawLikes.length));
+            
+            String[] rawDislikes = myReader.nextLine().split(" ");
+            clients[i].dislikes = Arrays.asList(Arrays.copyOfRange(rawDislikes, 1, rawDislikes.length));
+
+            ingredients.addAll(newClient.likes);
+            ingredients.addAll(newClient.dislikes);
+        }
+        myReader.close();
+        return new InputParameters(ingredients, clients);
+    }
+
+    static String ingredientsToInclude(InputParameters inputParams)
+    {
         return "";
     }
 
+    static void saveResult(String result)
+    {
+        String ouputFileName = "result.txt";
+
+        File ouputFileObject = new File(ouputFileName);
+        ouputFileObject.createNewFile();
+
+        FileWriter myWriter = new FileWriter(ouputFileName);
+        myWriter.write(result);
+
+        myWriter.close();
+    }
+    
     public static void main(String[] args) {
+        
+        InputParameters inputParams;
         try {
-            File inputFileObject = new File("inputs/a_an_example.in.txt");
-            Scanner myReader = new Scanner(inputFileObject);
-
-            int numClients = Integer.parseInt(myReader.nextLine());
-            HashSet<String> ingredients = new HashSet<>();
-            Client[] clients = new Client[numClients];
-
-            for (int i = 0; i < numClients; ++i) {
-                
-                Client newClient = new Client();
-
-                String[] rawLikes = myReader.nextLine().split(" ");
-                newClient.likes = Arrays.asList(Arrays.copyOfRange(rawLikes, 1, rawLikes.length));
-                
-                String[] rawDislikes = myReader.nextLine().split(" ");
-                newClient.dislikes = Arrays.asList(Arrays.copyOfRange(rawDislikes, 1, rawDislikes.length));
-
-                ingredients.addAll(newClient.likes);
-                ingredients.addAll(newClient.dislikes);
-                
-                clients[i] = newClient;
-            }
-
-            myReader.close();
-
-            String result = ingredientsToInclude(ingredients, clients);
-            String ouputFileName = "result.txt";
-
-            File ouputFileObject = new File(ouputFileName);
-            ouputFileObject.createNewFile();
-
-            FileWriter myWriter = new FileWriter(ouputFileName);
-            myWriter.write(result);
-
-            myWriter.close();
-
-        } catch (Exception e) {
-            System.out.println("An error occurred: " + e.getMessage());
+            inputParams = getInputParameters("input/a_an_example.in.txt");
+            String result = ingredientsToInclude(inputParams);
+            saveResult(result);
+        }
+        catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-
-        
     }
 }
