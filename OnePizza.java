@@ -1,11 +1,9 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
-import java.util.Arrays;
-import java.util.Scanner;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.List;
+import java.io.IOError;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * OnePizza
@@ -57,7 +55,7 @@ public class OnePizza {
     
     static InputParameters getInputParameters(String pathToInputFile) throws FileNotFoundException
     {
-        File inputFileObject = new File("inputs/a_an_example.in.txt");
+        File inputFileObject = new File(pathToInputFile);
         Scanner myReader = new Scanner(inputFileObject);
 
         int numClients = Integer.parseInt(myReader.nextLine());
@@ -85,7 +83,7 @@ public class OnePizza {
         return "";
     }
 
-    static void saveResult(String result)
+    static void saveResult(String result) throws IOException
     {
         String ouputFileName = "result.txt";
 
@@ -98,16 +96,75 @@ public class OnePizza {
         myWriter.close();
     }
     
+    static String process(String pathToInputFile) throws FileNotFoundException
+    {
+        File inputFileObject = new File(pathToInputFile);
+        Scanner myReader = new Scanner(inputFileObject);
+
+        int numClients = Integer.parseInt(myReader.nextLine());
+        Map<String, Integer> ingredientsMap = new HashMap<>();
+
+        for (int i = 0; i < numClients; ++i) {
+
+            String[] rawLikes = myReader.nextLine().split(" ");
+            int numLikedIngredients = Integer.parseInt(rawLikes[0]);
+            for (int j = 1; j <= numLikedIngredients; j++)
+            {
+                String ingredient = rawLikes[j];
+                if (ingredientsMap.containsKey(ingredient))
+                {
+                    int currentCounter = ingredientsMap.get(ingredient);
+                    ingredientsMap.put(ingredient, currentCounter + 1);
+                }
+                else
+                {
+                    ingredientsMap.put(ingredient, 1);
+                }
+            }
+
+            String[] rawDisLikes = myReader.nextLine().split(" ");
+            int numDisLikedIngredients = Integer.parseInt(rawDisLikes[0]);
+            for (int j = 1; j <= numDisLikedIngredients; j++)
+            {
+                String ingredient = rawDisLikes[j];
+                if (ingredientsMap.containsKey(ingredient))
+                {
+                    int currentCounter = ingredientsMap.get(ingredient);
+                    ingredientsMap.put(ingredient, currentCounter - 1);
+                }
+                else
+                {
+                    ingredientsMap.put(ingredient, -1);
+                }
+            }
+        }
+
+        List<String> ingredientsToInclude = new ArrayList<>();
+
+        for (Map.Entry<String, Integer> entry : ingredientsMap.entrySet()) {
+            if (entry.getValue() > 0)
+            {
+                ingredientsToInclude.add(entry.getKey());
+            }
+        }   
+
+        myReader.close();
+        return String.join(" ", ingredientsToInclude);
+    }
+
     public static void main(String[] args) {
         
         InputParameters inputParams;
         try {
-            inputParams = getInputParameters("input/a_an_example.in.txt");
-            String result = ingredientsToInclude(inputParams);
+            String pathToInputFile = "inputs/d_d.in.txt";
+            // inputParams = getInputParameters("input/a_an_example.in.txt");
+            // String result = ingredientsToInclude(inputParams);
+            // saveResult(result);
+            String result = process(pathToInputFile);
             saveResult(result);
         }
-        catch (FileNotFoundException e) {
+        catch (IOException e) {
             e.printStackTrace();
         }
     }
-}
+}   
