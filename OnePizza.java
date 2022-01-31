@@ -148,14 +148,14 @@ public class OnePizza {
         }   
 
         myReader.close();
-        return String.join(" ", ingredientsToInclude);
+        return "" + ingredientsToInclude.size() + " " + String.join(" ", ingredientsToInclude);
     }
 
     public static void main(String[] args) {
         
         InputParameters inputParams;
         try {
-            String pathToInputFile = "inputs/d_d.in.txt";
+            String pathToInputFile = "inputs/e_elaborate.in.txt";
             // inputParams = getInputParameters("input/a_an_example.in.txt");
             // String result = ingredientsToInclude(inputParams);
             // saveResult(result);
