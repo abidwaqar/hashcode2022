@@ -40,20 +40,17 @@ public class OnePizza {
         List<String> dislikes;
     }
 
-    static class InputParameters
-    {
+    static class InputParameters {
         Set<String> ingredients;
         Client[] clients;
 
-        public InputParameters(Set<String> ingredients, Client[] clients)
-        {
+        public InputParameters(Set<String> ingredients, Client[] clients) {
             this.ingredients = ingredients;
             this.clients = clients;
         }
     }
-    
-    static InputParameters getInputParameters(String pathToInputFile) throws FileNotFoundException
-    {
+
+    static InputParameters getInputParameters(String pathToInputFile) throws FileNotFoundException {
         File inputFileObject = new File(pathToInputFile);
         Scanner myReader = new Scanner(inputFileObject);
 
@@ -66,7 +63,7 @@ public class OnePizza {
 
             String[] rawLikes = myReader.nextLine().split(" ");
             clients[i].likes = Arrays.asList(Arrays.copyOfRange(rawLikes, 1, rawLikes.length));
-            
+
             String[] rawDislikes = myReader.nextLine().split(" ");
             clients[i].dislikes = Arrays.asList(Arrays.copyOfRange(rawDislikes, 1, rawDislikes.length));
 
@@ -77,13 +74,11 @@ public class OnePizza {
         return new InputParameters(ingredients, clients);
     }
 
-    static String ingredientsToInclude(InputParameters inputParams)
-    {
+    static String ingredientsToInclude(InputParameters inputParams) {
         return "";
     }
 
-    static void saveResult(String result) throws IOException
-    {
+    static void saveResult(String result) throws IOException {
         String ouputFileName = "result.txt";
 
         File ouputFileObject = new File(ouputFileName);
@@ -94,9 +89,8 @@ public class OnePizza {
 
         myWriter.close();
     }
-    
-    static String process(String pathToInputFile) throws FileNotFoundException
-    {
+
+    static String process(String pathToInputFile) throws FileNotFoundException {
         File inputFileObject = new File(pathToInputFile);
         Scanner myReader = new Scanner(inputFileObject);
 
@@ -107,52 +101,48 @@ public class OnePizza {
 
             String[] rawLikes = myReader.nextLine().split(" ");
             int numLikedIngredients = Integer.parseInt(rawLikes[0]);
-            for (int j = 1; j <= numLikedIngredients; j++)
-            {
+            for (int j = 1; j <= numLikedIngredients; j++) {
                 String ingredient = rawLikes[j];
-                if (ingredientsMap.containsKey(ingredient))
-                {
-                    int currentCounter = ingredientsMap.get(ingredient);
-                    ingredientsMap.put(ingredient, currentCounter + 1);
-                }
-                else
-                {
-                    ingredientsMap.put(ingredient, 1);
-                }
+                ingredientsMap.put(ingredient, ingredientsMap.getOrDefault(ingredient, 0) + 1);
             }
 
             String[] rawDisLikes = myReader.nextLine().split(" ");
             int numDisLikedIngredients = Integer.parseInt(rawDisLikes[0]);
-            for (int j = 1; j <= numDisLikedIngredients; j++)
-            {
+            for (int j = 1; j <= numDisLikedIngredients; j++) {
                 String ingredient = rawDisLikes[j];
-                if (ingredientsMap.containsKey(ingredient))
-                {
-                    int currentCounter = ingredientsMap.get(ingredient);
-                    ingredientsMap.put(ingredient, currentCounter - 1);
-                }
-                else
-                {
-                    ingredientsMap.put(ingredient, -1);
-                }
+                ingredientsMap.put(ingredient, ingredientsMap.getOrDefault(ingredient, 0) - 1);
             }
         }
 
         List<String> ingredientsToInclude = new ArrayList<>();
 
         for (Map.Entry<String, Integer> entry : ingredientsMap.entrySet()) {
-            if (entry.getValue() > 0)
-            {
+            if (entry.getValue() > 0) {
                 ingredientsToInclude.add(entry.getKey());
             }
-        }   
+        }
 
         myReader.close();
         return "" + ingredientsToInclude.size() + " " + String.join(" ", ingredientsToInclude);
     }
 
+    static void ingredientsPermutations(ArrayList<String> ingredients, HashMap<String, Integer> ingredientsScoreCache) {
+        String key = String.join(" ", ingredients);
+        if (key == "" || ingredientsScoreCache.containsKey(key)) {
+            return;
+        }
+
+        ingredientsScoreCache.put(key, value);
+
+        for (int i = 0; i < ingredients.size(); ++i) {
+            String removedIngredient = ingredients.remove(i);
+            ingredientsPermutations(ingredients, ingredientsScoreCache);
+            ingredients.add(i, removedIngredient);
+        }
+    }
+
     public static void main(String[] args) {
-        
+
         InputParameters inputParams;
         try {
             String pathToInputFile = "inputs/e_elaborate.in.txt";
@@ -161,9 +151,8 @@ public class OnePizza {
             // saveResult(result);
             String result = process(pathToInputFile);
             saveResult(result);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
-}   
+}
