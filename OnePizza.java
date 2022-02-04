@@ -3,6 +3,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * OnePizza
@@ -59,7 +60,7 @@ public class OnePizza {
         Client[] clients = new Client[numClients];
 
         for (int i = 0; i < numClients; ++i) {
-            Client newClient = new Client();
+            clients[i] = new Client();
 
             String[] rawLikes = myReader.nextLine().split(" ");
             clients[i].likes = Arrays.asList(Arrays.copyOfRange(rawLikes, 1, rawLikes.length));
@@ -67,15 +68,31 @@ public class OnePizza {
             String[] rawDislikes = myReader.nextLine().split(" ");
             clients[i].dislikes = Arrays.asList(Arrays.copyOfRange(rawDislikes, 1, rawDislikes.length));
 
-            ingredients.addAll(newClient.likes);
-            ingredients.addAll(newClient.dislikes);
+            ingredients.addAll(clients[i].likes);
+            ingredients.addAll(clients[i].dislikes);
         }
         myReader.close();
         return new InputParameters(ingredients, clients);
     }
 
     static String ingredientsToInclude(InputParameters inputParams) {
-        return "";
+        HashMap<String, Integer> ingredientsScoreCache = new HashMap<>();
+        ArrayList<String> ingredients = new ArrayList<>();
+        ingredients.addAll(inputParams.ingredients);
+
+        ingredientsPermutations(ingredients, ingredientsScoreCache, inputParams.clients);
+
+        int maxScore = -1;
+        String maxScoreIngredients = "";
+        for (Entry<String, Integer> entry : ingredientsScoreCache.entrySet()) {
+            if (entry.getValue() > maxScore) {
+                maxScore = entry.getValue();
+                maxScoreIngredients = entry.getKey();
+            }
+        }
+
+        int ingredientsCount = maxScoreIngredients == "" ? 0 : maxScoreIngredients.split(" ").length + 1;
+        return "" + ingredientsCount + " " + maxScoreIngredients;
     }
 
     static void saveResult(String result) throws IOException {
@@ -126,31 +143,62 @@ public class OnePizza {
         return "" + ingredientsToInclude.size() + " " + String.join(" ", ingredientsToInclude);
     }
 
-    static void ingredientsPermutations(ArrayList<String> ingredients, HashMap<String, Integer> ingredientsScoreCache) {
+    static void ingredientsPermutations(
+            ArrayList<String> ingredients,
+            HashMap<String, Integer> ingredientsScoreCache,
+            Client[] clients) {
         String key = String.join(" ", ingredients);
-        if (key == "" || ingredientsScoreCache.containsKey(key)) {
+        if (ingredientsScoreCache.containsKey(key)) {
             return;
         }
 
-        ingredientsScoreCache.put(key, value);
+        ingredientsScoreCache.put(key, calculateScore(ingredients, clients));
 
         for (int i = 0; i < ingredients.size(); ++i) {
             String removedIngredient = ingredients.remove(i);
-            ingredientsPermutations(ingredients, ingredientsScoreCache);
+            ingredientsPermutations(ingredients, ingredientsScoreCache, clients);
             ingredients.add(i, removedIngredient);
         }
+    }
+
+    static int calculateScore(ArrayList<String> ingredients, Client[] clients) {
+        int happyClients = 0;
+
+        for (Client client : clients) {
+            boolean isClientPreferenceMet = true;
+
+            for (String likeIngredient : client.likes) {
+                if (!isClientPreferenceMet || !ingredients.contains(likeIngredient)) {
+                    isClientPreferenceMet = false;
+                    break;
+                }
+            }
+
+            for (String dislikeIngredient : client.dislikes) {
+                if (!isClientPreferenceMet || ingredients.contains(dislikeIngredient)) {
+                    isClientPreferenceMet = false;
+                    break;
+                }
+            }
+
+            if (isClientPreferenceMet) {
+                ++happyClients;
+            }
+        }
+
+        return happyClients;
     }
 
     public static void main(String[] args) {
 
         InputParameters inputParams;
         try {
-            String pathToInputFile = "inputs/e_elaborate.in.txt";
-            // inputParams = getInputParameters("input/a_an_example.in.txt");
-            // String result = ingredientsToInclude(inputParams);
-            // saveResult(result);
-            String result = process(pathToInputFile);
+            String pathToInputFile = "inputs/d_difficult.in.txt";
+            inputParams = getInputParameters(pathToInputFile);
+            String result = ingredientsToInclude(inputParams);
             saveResult(result);
+            // String result = process(pathToInputFile);
+            // saveResult(result);
         } catch (IOException e) {
             e.printStackTrace();
         }
