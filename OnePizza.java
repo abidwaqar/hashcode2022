@@ -91,8 +91,7 @@ public class OnePizza {
             }
         }
 
-        int ingredientsCount = maxScoreIngredients == "" ? 0 : maxScoreIngredients.split(" ").length + 1;
-        return "" + ingredientsCount + " " + maxScoreIngredients;
+        return "" + maxScoreIngredients.split(" ").length + " " + maxScoreIngredients;
     }
 
     static void saveResult(String result) throws IOException {
@@ -193,7 +192,7 @@ public class OnePizza {
 
         InputParameters inputParams;
         try {
-            String pathToInputFile = "inputs/d_difficult.in.txt";
+            String pathToInputFile = "inputs/c_coarse.in.txt";
             inputParams = getInputParameters(pathToInputFile);
             String result = ingredientsToInclude(inputParams);
             saveResult(result);
