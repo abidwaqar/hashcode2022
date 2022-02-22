@@ -94,52 +94,14 @@ public class OnePizza {
         return "" + maxScoreIngredients.split(" ").length + " " + maxScoreIngredients;
     }
 
-    static void saveResult(String result) throws IOException {
-        String ouputFileName = "result.txt";
-
-        File ouputFileObject = new File(ouputFileName);
+    static void saveResult(String result, String outputFileName) throws IOException {
+        File ouputFileObject = new File(outputFileName);
         ouputFileObject.createNewFile();
 
-        FileWriter myWriter = new FileWriter(ouputFileName);
+        FileWriter myWriter = new FileWriter(outputFileName);
         myWriter.write(result);
 
         myWriter.close();
-    }
-
-    static String process(String pathToInputFile) throws FileNotFoundException {
-        File inputFileObject = new File(pathToInputFile);
-        Scanner myReader = new Scanner(inputFileObject);
-
-        int numClients = Integer.parseInt(myReader.nextLine());
-        Map<String, Integer> ingredientsMap = new HashMap<>();
-
-        for (int i = 0; i < numClients; ++i) {
-
-            String[] rawLikes = myReader.nextLine().split(" ");
-            int numLikedIngredients = Integer.parseInt(rawLikes[0]);
-            for (int j = 1; j <= numLikedIngredients; j++) {
-                String ingredient = rawLikes[j];
-                ingredientsMap.put(ingredient, ingredientsMap.getOrDefault(ingredient, 0) + 1);
-            }
-
-            String[] rawDisLikes = myReader.nextLine().split(" ");
-            int numDisLikedIngredients = Integer.parseInt(rawDisLikes[0]);
-            for (int j = 1; j <= numDisLikedIngredients; j++) {
-                String ingredient = rawDisLikes[j];
-                ingredientsMap.put(ingredient, ingredientsMap.getOrDefault(ingredient, 0) - 1);
-            }
-        }
-
-        List<String> ingredientsToInclude = new ArrayList<>();
-
-        for (Map.Entry<String, Integer> entry : ingredientsMap.entrySet()) {
-            if (entry.getValue() > 0) {
-                ingredientsToInclude.add(entry.getKey());
-            }
-        }
-
-        myReader.close();
-        return "" + ingredientsToInclude.size() + " " + String.join(" ", ingredientsToInclude);
     }
 
     static void ingredientsPermutations(
@@ -188,16 +150,72 @@ public class OnePizza {
         return happyClients;
     }
 
-    public static void main(String[] args) {
+    static String process(String pathToInputFile) throws FileNotFoundException {
+        File inputFileObject = new File(pathToInputFile);
+        Scanner myReader = new Scanner(inputFileObject);
 
-        InputParameters inputParams;
+        int numClients = Integer.parseInt(myReader.nextLine());
+        Map<String, Integer> ingredientsMap = new HashMap<>();
+
+        for (int i = 0; i < numClients; ++i) {
+
+            String[] rawLikes = myReader.nextLine().split(" ");
+            int numLikedIngredients = Integer.parseInt(rawLikes[0]);
+            for (int j = 1; j <= numLikedIngredients; j++) {
+                String ingredient = rawLikes[j];
+                ingredientsMap.put(ingredient, ingredientsMap.getOrDefault(ingredient, 0) + 1);
+            }
+
+            String[] rawDisLikes = myReader.nextLine().split(" ");
+            int numDisLikedIngredients = Integer.parseInt(rawDisLikes[0]);
+            for (int j = 1; j <= numDisLikedIngredients; j++) {
+                String ingredient = rawDisLikes[j];
+                ingredientsMap.put(ingredient, ingredientsMap.getOrDefault(ingredient, 0) - 1);
+            }
+        }
+
+        myReader.close();
+
+        List<String> ingredientsToInclude = new ArrayList<>();
+
+        for (Map.Entry<String, Integer> entry : ingredientsMap.entrySet()) {
+            if (entry.getValue() > 0) {
+                ingredientsToInclude.add(entry.getKey());
+            }
+        }
+
+        return "" + ingredientsToInclude.size() + " " + String.join(" ", ingredientsToInclude);
+    }
+
+    public static void main(String[] args) {
+        // InputParameters inputParams;
+
+        String[] pathToInputFiles = {
+                "inputs/a_an_example.in.txt",
+                "inputs/b_basic.in.txt",
+                "inputs/c_coarse.in.txt",
+                "inputs/d_difficult.in.txt",
+                "inputs/e_elaborate.in.txt"
+        };
+
+        String[] pathToOutputFiles = {
+                "outputs/a_an_example.out.txt",
+                "outputs/b_basic.out.txt",
+                "outputs/c_coarse.out.txt",
+                "outputs/d_difficult.out.txt",
+                "outputs/e_elaborate.out.txt"
+        };
+
         try {
-            String pathToInputFile = "inputs/c_coarse.in.txt";
-            inputParams = getInputParameters(pathToInputFile);
-            String result = ingredientsToInclude(inputParams);
-            saveResult(result);
-            // String result = process(pathToInputFile);
+            // String pathToInputFile = "inputs/c_coarse.in.txt";
+            // inputParams = getInputParameters(pathToInputFile);
+            // String result = ingredientsToInclude(inputParams);
             // saveResult(result);
+
+            for (int i = 0; i < pathToInputFiles.length; ++i) {
+                String result = process(pathToInputFiles[i]);
+                saveResult(result, pathToOutputFiles[i]);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
