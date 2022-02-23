@@ -73,16 +73,12 @@ public class OnePizzaGraph {
         int dislikeByPeople = ingredient.dislikeByPeople.size();
         int likeByPeople = ingredient.likeByPeople.size();
 
-        if (dislikeByPeople == 0) {
-            dislikeByPeople = 1;
-        }
-
-        return likeByPeople / dislikeByPeople;
+        return likeByPeople - dislikeByPeople;
     }
 
     private static Ingredient nextIngredientToAdd(List<Ingredient> ingredients) {
         Ingredient maxScoreIngredient = null;
-        float maxScore = -1;
+        float maxScore = Integer.MIN_VALUE;
         for (Ingredient ingredient : ingredients) {
             if (!ingredient.processed) {
                 float currentScore = ingredientScore(ingredient);

@@ -31,7 +31,21 @@ public class Ingredient {
             }
 
             this.dislikeByPeople.clear();
-        }
+        } else {
+            // opinion of people who like this ingredient dosen't count now
+            for (Person person : likeByPeople) {
+                for (Ingredient ingredient : person.likeIngredients) {
+                    if (ingredient != this) {
+                        ingredient.likeByPeople.remove(person);
+                    }
+                }
 
+                for (Ingredient ingredient : person.dislikeIngredients) {
+                    ingredient.dislikeByPeople.remove(person);
+                }
+            }
+
+            this.likeByPeople.clear();
+        }
     }
 }
