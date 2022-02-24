@@ -101,12 +101,4 @@ public class MentorshipAndTeamwork {
             e.printStackTrace();
         }
     }
-
-    private static void saveResult(String result, String outputFileNameWithPath) throws IOException {
-        new File(outputFileNameWithPath).createNewFile();
-
-        try (FileWriter myWriter = new FileWriter(outputFileNameWithPath)) {
-            myWriter.write(result);
-        }
-    }
 }
