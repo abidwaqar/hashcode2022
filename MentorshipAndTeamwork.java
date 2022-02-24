@@ -7,11 +7,11 @@ public class MentorshipAndTeamwork {
         try {
             String[] filesNames = {
                     "a_an_example",
-                    // "b_better_start_small",
-                    // "c_collaboration",
-                    // "d_dense_schedule",
-                    // "e_exceptional_skills",
-                    // "f_find_great_mentors"
+                    "b_better_start_small",
+                    "c_collaboration",
+                    "d_dense_schedule",
+                    "e_exceptional_skills",
+                    "f_find_great_mentors"
             };
 
             for (String fileName : filesNames) {
@@ -113,6 +113,10 @@ public class MentorshipAndTeamwork {
 
                     for (Project project : projects) {
 
+                        if (project.status != ProjectStatus.TODO) {
+                            continue;
+                        }
+
                         boolean resourcesFound = true;
 
                         if (project.score - (date + project.days - project.bestBeforeDay) > 0) {
@@ -121,12 +125,12 @@ public class MentorshipAndTeamwork {
 
                             // TODO improve
                             for (Role role : project.roles) {
+                                resourcesFound = false;
                                 for (Contributor contributor : contributors) {
                                     if (contributor.status == ContributorStatus.AVAILABLE
                                             && contributorMatchesRole(contributor.skills, role)) {
                                         projectContributors.add(contributor);
-                                    } else {
-                                        resourcesFound = false;
+                                        resourcesFound = true;
                                         break;
                                     }
                                 }
@@ -146,7 +150,13 @@ public class MentorshipAndTeamwork {
                                 }
 
                                 int key = date + project.days;
-                                projectDueDates.getOrDefault(key, new ArrayList<>()).add(project);
+                                if (projectDueDates.containsKey(key)) {
+                                    projectDueDates.get(key).add(project);
+                                } else {
+                                    List<Project> tempList = new ArrayList<>();
+                                    tempList.add(project);
+                                    projectDueDates.put(key, tempList);
+                                }
 
                                 projectFound = true;
 
@@ -169,10 +179,10 @@ public class MentorshipAndTeamwork {
                 new File(pathToOutputFile).createNewFile();
 
                 try (FileWriter myWriter = new FileWriter(pathToOutputFile)) {
-                    myWriter.write(outputs.size());
+                    myWriter.write("" + outputs.size() + "\n");
                     for (Output output : outputs) {
-                        myWriter.write(output.projectName);
-                        myWriter.write(String.join(" ", output.contributors));
+                        myWriter.write(output.projectName + "\n");
+                        myWriter.write(String.join(" ", output.contributors) + "\n");
                     }
                 }
             }
