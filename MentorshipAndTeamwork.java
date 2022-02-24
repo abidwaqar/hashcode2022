@@ -131,11 +131,15 @@ public class MentorshipAndTeamwork {
                                             && contributorMatchesRole(contributor.skills, role)) {
                                         projectContributors.add(contributor);
                                         resourcesFound = true;
+                                        contributor.status = ContributorStatus.WORKING;
                                         break;
                                     }
                                 }
 
                                 if (resourcesFound == false) {
+                                    for (Contributor contributor : projectContributors) {
+                                        contributor.status = ContributorStatus.AVAILABLE;
+                                    }
                                     break;
                                 }
                             }
