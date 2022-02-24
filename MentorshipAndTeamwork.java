@@ -1,6 +1,5 @@
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.util.*;
 
 public class MentorshipAndTeamwork {
@@ -81,8 +80,89 @@ public class MentorshipAndTeamwork {
                 // Logic
 
                 List<Output> outputs = new ArrayList<>();
+                HashMap<Integer, List<Project>> projectDueDates = new HashMap<>();
 
-                // TODO implement logic
+                Collections.sort(projects, (x, y) -> (y.score / y.days) - (x.score / x.days));
+
+                int date = 0;
+                boolean projectFound = true;
+                while (projectFound || projectDueDates.size() != 0) {
+                    projectFound = false;
+
+                    if (projectDueDates.containsKey(date)) {
+                        for (Project project : projectDueDates.get(date)) {
+                            project.status = ProjectStatus.DONE;
+
+                            for (Contributor contributor : project.contributors) {
+                                contributor.status = ContributorStatus.AVAILABLE;
+                            }
+
+                            for (int i = 0; i < project.contributors.size(); ++i) {
+                                Contributor contributor = project.contributors.get(i);
+                                Role role = project.roles.get(i);
+                                Skill skill = contributor.getSkill(role.skillName);
+
+                                if (skill.level <= role.requiredLevel) {
+                                    ++skill.level;
+                                }
+                            }
+                        }
+
+                        projectDueDates.remove(date);
+                    }
+
+                    for (Project project : projects) {
+
+                        boolean resourcesFound = true;
+
+                        if (project.score - (date + project.days - project.bestBeforeDay) > 0) {
+
+                            List<Contributor> projectContributors = new ArrayList<>();
+
+                            // TODO improve
+                            for (Role role : project.roles) {
+                                for (Contributor contributor : contributors) {
+                                    if (contributor.status == ContributorStatus.AVAILABLE
+                                            && contributorMatchesRole(contributor.skills, role)) {
+                                        projectContributors.add(contributor);
+                                    } else {
+                                        resourcesFound = false;
+                                        break;
+                                    }
+                                }
+
+                                if (resourcesFound == false) {
+                                    break;
+                                }
+                            }
+
+                            if (resourcesFound == false) {
+                                continue;
+                            } else {
+                                project.status = ProjectStatus.DOING;
+                                project.contributors = projectContributors;
+                                for (Contributor contributor : projectContributors) {
+                                    contributor.status = ContributorStatus.WORKING;
+                                }
+
+                                int key = date + project.days;
+                                projectDueDates.getOrDefault(key, new ArrayList<>()).add(project);
+
+                                projectFound = true;
+
+                                // Adding output
+                                Output output = new Output(project.name);
+                                for (Contributor contributor : projectContributors) {
+                                    output.contributors.add(contributor.name);
+                                }
+
+                                outputs.add(output);
+                            }
+                        }
+                    }
+
+                    ++date;
+                }
 
                 // Saving output
 
@@ -100,5 +180,15 @@ public class MentorshipAndTeamwork {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private static boolean contributorMatchesRole(List<Skill> skills, Role role) {
+        for (Skill skill : skills) {
+            if (skill.name.equals(role.skillName) && skill.level >= role.requiredLevel) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

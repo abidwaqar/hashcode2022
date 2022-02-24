@@ -12,16 +12,9 @@
         },
         {
             "type": "java",
-            "name": "Launch OnePizza",
+            "name": "Launch MentorshipAndTeamwork",
             "request": "launch",
-            "mainClass": "OnePizza",
-            "projectName": "hashcode2022_7521a5a2"
-        },
-        {
-            "type": "java",
-            "name": "Launch OnePizzaGraph",
-            "request": "launch",
-            "mainClass": "OnePizzaGraph",
+            "mainClass": "MentorshipAndTeamwork",
             "projectName": "hashcode2022_7521a5a2"
         }
     ]
