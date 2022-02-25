@@ -18,8 +18,8 @@ public class MentorshipAndTeamwork {
 
                 // Reading input
 
-                String pathToInputFile = "inputs/" + fileName + ".in.txt";
-                String pathToOutputFile = "outputs/" + fileName + ".out.txt";
+                String pathToInputFile = "Qualification Round/inputs/" + fileName + ".in.txt";
+                String pathToOutputFile = "Qualification Round/outputs/" + fileName + ".out.txt";
 
                 Scanner myReader = new Scanner(new File(pathToInputFile));
 
@@ -123,7 +123,6 @@ public class MentorshipAndTeamwork {
 
                             List<Contributor> projectContributors = new ArrayList<>();
 
-                            // TODO improve
                             for (Role role : project.roles) {
                                 resourcesFound = false;
                                 for (Contributor contributor : contributors) {
