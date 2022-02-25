@@ -32,7 +32,7 @@ import java.util.*;
  * Each ingredient name consists of between 1 and 15 ASCII characters. Each
  * character is one of the lowercase letters (a-z) or a digit (0-9).
  */
-public class OnePizzaGraph {
+public class OnePizza {
     private static void saveResult(String result, String outputFileNameWithPath) throws IOException {
         new File(outputFileNameWithPath).createNewFile();
 
@@ -105,8 +105,8 @@ public class OnePizzaGraph {
 
                 // Reading input and making a graph
 
-                String pathToInputFile = "inputs/" + fileName + ".in.txt";
-                String pathToOutputFile = "outputs/" + fileName + ".out.txt";
+                String pathToInputFile = "./Practice Round/Solution 2/inputs/" + fileName + ".in.txt";
+                String pathToOutputFile = "./Practice Round/Solution 2/outputs/" + fileName + ".out.txt";
 
                 Scanner myReader = new Scanner(new File(pathToInputFile));
 

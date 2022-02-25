@@ -191,19 +191,19 @@ public class OnePizza {
         // InputParameters inputParams;
 
         String[] pathToInputFiles = {
-                "inputs/a_an_example.in.txt",
-                "inputs/b_basic.in.txt",
-                "inputs/c_coarse.in.txt",
-                "inputs/d_difficult.in.txt",
-                "inputs/e_elaborate.in.txt"
+                "./Practice Round/Solution 1/inputs/a_an_example.in.txt",
+                "./Practice Round/Solution 1/inputs/b_basic.in.txt",
+                "./Practice Round/Solution 1/inputs/c_coarse.in.txt",
+                "./Practice Round/Solution 1/inputs/d_difficult.in.txt",
+                "./Practice Round/Solution 1/inputs/e_elaborate.in.txt"
         };
 
         String[] pathToOutputFiles = {
-                "outputs/a_an_example.out.txt",
-                "outputs/b_basic.out.txt",
-                "outputs/c_coarse.out.txt",
-                "outputs/d_difficult.out.txt",
-                "outputs/e_elaborate.out.txt"
+                "./Practice Round/Solution 1/outputs/a_an_example.out.txt",
+                "./Practice Round/Solution 1/outputs/b_basic.out.txt",
+                "./Practice Round/Solution 1/outputs/c_coarse.out.txt",
+                "./Practice Round/Solution 1/outputs/d_difficult.out.txt",
+                "./Practice Round/Solution 1/outputs/e_elaborate.out.txt"
         };
 
         try {
